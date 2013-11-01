@@ -4,7 +4,7 @@ int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint)
 {
 	struct termios options;
 	
-	if (tcgettattr(STDIN_FILENO, &options) != 0)
+	if (tcgetattr(STDIN_FILENO, &options) != 0)
 		return -1;
 	if (regime == 1)
 		options.c_lflag |= ICANON;
@@ -17,8 +17,6 @@ int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint)
 		options.c_cc[VTIME] = vtime;
 		options.c_cc[VMIN] = vmin;
 	}
-	else
-		return -1;
 	if (echo == 1)
 		options.c_lflag |= ECHO;
 	else
@@ -33,7 +31,7 @@ int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint)
 		options.c_lflag &= ~ISIG;
 	else
 		return -1;
-	if (tcgettattr(STDIN_FILENO, TCSAFLUSH, &options) != 0)
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &options) != 0)
 		return -1;
 	
 	return 0;
