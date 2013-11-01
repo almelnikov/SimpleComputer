@@ -14,6 +14,7 @@ enum keys {
 	KEY_r,
 	KEY_t,
 	KEY_i,
+	KEY_q,
 	KEY_f5,
 	KEY_f6,
 	KEY_up,

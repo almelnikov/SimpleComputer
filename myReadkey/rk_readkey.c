@@ -29,6 +29,9 @@ int rk_readkey(enum keys *key)
 	if (strcmp(buf, "i") == 0)
 		*key = KEY_i;
 	else
+	if (strcmp(buf, "q") == 0)
+		*key = KEY_q;
+	else
 	if (strcmp(buf, "\033[15~") == 0)
 		*key = KEY_f5;
 	else
