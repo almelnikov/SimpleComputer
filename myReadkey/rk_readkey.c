@@ -45,10 +45,10 @@ int rk_readkey(enum keys *key)
 		*key = KEY_down;
 	else
 	if (strcmp(buf, "\033[C") == 0)
-		*key = KEY_left;
+		*key = KEY_right;
 	else
 	if (strcmp(buf, "\033[D") == 0)
-		*key = KEY_right;
+		*key = KEY_left;
 	else
 		*key = KEY_other;
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &orig_options) != 0)
