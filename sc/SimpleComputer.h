@@ -17,6 +17,7 @@ void print_boxes();
 void print_labels();
 void print_counter();
 int print_mcell(int *bigchars);
+void refresh_gui();
 int main();
 
 #endif /* __GUARD_SIMLECOMPUTER_H */

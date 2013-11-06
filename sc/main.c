@@ -20,16 +20,7 @@ int main()
 		return -1;
 	bc_bigcharread(fd, big, 128, &cnt);
 	
-	mt_clrscr();
-	print_boxes();
-	print_labels();
-	print_keys(48, 14);
-	print_counter();
-	print_memory(2, 2);
-	print_flags(68, 11);
-	print_mcell(big);
-	
-	mt_gotoXY(1, 23);
+	refresh_gui(big);
 	close(fd);
 	
 	return 0;
