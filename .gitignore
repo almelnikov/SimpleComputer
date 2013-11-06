@@ -1,0 +1,14 @@
+*.o
+*.a
+*~
+SimpleComputer
+tests/test1
+tests/test2
+tests/test_bc
+tests/test_mt
+tests/test_rk
+tests/test_sc
+memory
+tests/bigtest
+tests/bigchars
+tests/termsettings
