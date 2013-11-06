@@ -2,5 +2,6 @@
 
 int sc_memory[MEMSIZE];
 int sc_reg_flags; // Регистр флагов
-const int correct_ops[] = {10, 11, 20, 21, 30, 31, 32, 33, 40, 41, 42, 43};
+const int correct_ops[] = {0x10, 0x11, 0x20, 0x21, 0x30, 0x31, 0x32, 0x33, 0x40,
+						   0x41, 0x42, 0x43};
 const int ops_num = 12;

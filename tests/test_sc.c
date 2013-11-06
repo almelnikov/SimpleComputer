@@ -29,11 +29,11 @@ int main()
 	sc_regGet(FLAG_DIVISION, &bit2);
 	printf("1?%d 0?%d\n", bit1, bit2);
 	/* Кодирование/декодирование комманд */
-	ret = sc_commandEncode(21, 4, &comm1);
+	ret = sc_commandEncode(0x21, 4, &comm1);
 	printf("Encoded command is %X Return value: %d\n", comm1, ret);
-	ret = sc_commandEncode(4, 4, &comm2);
+	ret = sc_commandEncode(0x4, 4, &comm2);
 	printf("Encoded command is %X Return value: %d\n", comm2, ret);
-	ret = sc_commandDecode(0xA84, &command, &operand);
+	ret = sc_commandDecode(0x1084, &command, &operand);
 	printf("Command; %d Operand: %d Return value: %d\n", command, operand, ret);
 	ret = sc_commandDecode(0xB84, &command, &operand);
 	printf("Command; %d Operand: %d Return value: %d\n", command, operand, ret);

@@ -28,4 +28,4 @@ test_rk:
 clean:
 	rm -f *.o
 	rm -f test_sc test_mt test1 test_bc test2 test_rk
-	rm -f memory bigtest bigchars
+	rm -f memory bigtest bigchars termsettings
