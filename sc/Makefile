@@ -11,4 +11,4 @@ all:
 	$(CC) $(INCLUDE) $(LIBS) $(CFLAGS) -o ../SimpleComputer $(SRCS) -lmySimpleComputer -lmyBigChars -lmyTerm -lmyReadkey
 
 clean:
-	rm -f ../SimpleComputer
+	rm -f ../SimpleComputer memory
