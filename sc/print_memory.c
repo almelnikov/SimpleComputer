@@ -4,24 +4,30 @@ void print_memory(int x, int y)
 {
 	int i, j;
 	int mem, command;
+	int opcode, operand;
 
 	for (i = 0; i < 10; i++) {
 		mt_gotoXY(x, y + i);
-		for (j = 0; j < 9; j++) {
+		for (j = 0; j < 10; j++) {
 			mem = sc_memory[i*10+j] & 0x3FFF;
 			command = (sc_memory[i*10+j] >> 14) & 1;
+			opcode = (mem >> 7) & 0x7F;
+			operand = mem & 0x7F;
+			if ((i * 10 + j) == inst_counter) {
+				mt_setfgcolor(clr_black);
+				mt_setbgcolor(clr_red);
+			}
 			if (command == 0)
 				printf("+");
 			else
 				printf(" ");
-			printf("%0*X ", 4, mem);
+			printf("%02X%02X", opcode, operand);
+			if ((i * 10 + j) == inst_counter) {
+				mt_setfgcolor(clr_default);
+				mt_setbgcolor(clr_default);
+			}
+			if (j != 9)
+				printf(" ");
 		}
-		mem = sc_memory[i*10+j] & 0x3FFF;
-		command = (sc_memory[i*10+j] >> 14) & 1;
-		if (command == 0)
-			printf("+");
-		else
-			printf(" ");
-		printf("%0*X", 4, mem);
 	}
 }
