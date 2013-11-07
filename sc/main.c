@@ -29,6 +29,7 @@ int main()
 		return -1;
 	}
 	bc_bigcharread(fd, big_chars, 128, &cnt);
+	setbuf(stdout, NULL);
 	while (!exit_flag) {
 		refresh_gui(position);
 		rk_readkey(&key);
