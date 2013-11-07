@@ -1,10 +1,10 @@
 #include "SimpleComputer.h"
 
 int inst_counter;
+int big_chars[256];
 
 int main()
 {
-	int big[256];
 	int cnt;
 	int fd;
 	int plus_flag, num;
@@ -19,9 +19,9 @@ int main()
 	
 	if ((fd = open("ascibig", O_RDONLY)) == -1)
 		return -1;
-	bc_bigcharread(fd, big, 128, &cnt);
+	bc_bigcharread(fd, big_chars, 128, &cnt);
 	
-	refresh_gui(big, 36);
+	refresh_gui(36);
 	scan_num(&plus_flag, &num);
 	printf("%d %x\n", plus_flag, num);
 	close(fd);
