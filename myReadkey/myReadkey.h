@@ -21,6 +21,7 @@ enum keys {
 	KEY_down,
 	KEY_left,
 	KEY_right,
+	KEY_enter,
 	KEY_other
 };
 

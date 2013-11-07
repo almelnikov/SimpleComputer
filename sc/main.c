@@ -58,6 +58,9 @@ int main()
 			case KEY_f6:
 				change_cnt(position);
 				break;
+			case KEY_enter:
+				change_mcell(position);
+				break;
 			case KEY_q:
 				exit(0);
 				break;
