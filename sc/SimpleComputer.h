@@ -18,7 +18,7 @@ void print_memory(int x, int y, int position);
 void print_boxes();
 void print_labels();
 void print_counter();
-int print_mcell(int *bigchars);
+int print_mcell(int *bigchars, int pos);
 void refresh_gui(int position);
 int scan_num(int *plus_flag, int *n);
 int change_acc(int pos);

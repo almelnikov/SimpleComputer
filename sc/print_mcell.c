@@ -1,9 +1,9 @@
 #include "SimpleComputer.h"
 
-int print_mcell(int *bigchars)
+int print_mcell(int *bigchars, int pos)
 {
-	int command = (sc_memory[inst_counter] >> 14) & 1;
-	int mem = sc_memory[inst_counter] & 0x3FFF;
+	int command = (sc_memory[pos] >> 14) & 1;
+	int mem = sc_memory[pos] & 0x3FFF;
 	int i;
 	char str[10];
 	char c;
