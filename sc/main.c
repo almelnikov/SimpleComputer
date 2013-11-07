@@ -20,7 +20,7 @@ int main()
 		return -1;
 	bc_bigcharread(fd, big, 128, &cnt);
 	
-	refresh_gui(big);
+	refresh_gui(big, 36);
 	close(fd);
 	
 	return 0;

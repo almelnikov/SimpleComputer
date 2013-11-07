@@ -1,6 +1,6 @@
 #include "SimpleComputer.h"
 
-void print_memory(int x, int y)
+void print_memory(int x, int y, int position)
 {
 	int i, j;
 	int mem, command;
@@ -13,7 +13,7 @@ void print_memory(int x, int y)
 			command = (sc_memory[i*10+j] >> 14) & 1;
 			opcode = (mem >> 7) & 0x7F;
 			operand = mem & 0x7F;
-			if ((i * 10 + j) == inst_counter) {
+			if ((i * 10 + j) == position) {
 				mt_setfgcolor(clr_black);
 				mt_setbgcolor(clr_red);
 			}
@@ -22,7 +22,7 @@ void print_memory(int x, int y)
 			else
 				printf(" ");
 			printf("%02X%02X", opcode, operand);
-			if ((i * 10 + j) == inst_counter) {
+			if ((i * 10 + j) == position) {
 				mt_setfgcolor(clr_default);
 				mt_setbgcolor(clr_default);
 			}
