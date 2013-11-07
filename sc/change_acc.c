@@ -5,7 +5,7 @@ int change_acc(int pos)
 	int plus_flag, num;
 
 	refresh_gui(pos);
-	if (scan_num(&plus_flag, &num) == 0) {
+	if (scan_num(&plus_flag, &num) != 0) {
 		printf("Not a number!");
 		return -1;
 	}

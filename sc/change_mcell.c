@@ -6,7 +6,7 @@ int change_mcell(int pos)
 	int command, operand, mem;
 
 	refresh_gui(pos);
-	if (scan_num(&plus_flag, &num) == 0) {
+	if (scan_num(&plus_flag, &num) != 0) {
 		printf("Not a number!");
 		return -1;
 	}
