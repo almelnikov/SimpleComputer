@@ -18,10 +18,9 @@ void print_memory(int x, int y, int position)
 				mt_setbgcolor(clr_red);
 			}
 			if (command == 0)
-				printf("+");
+				printf("+%02X%02X", opcode, operand);
 			else
-				printf(" ");
-			printf("%02X%02X", opcode, operand);
+				printf(" %04X", mem);
 			if ((i * 10 + j) == position) {
 				mt_setfgcolor(clr_default);
 				mt_setbgcolor(clr_default);
