@@ -7,6 +7,7 @@ int main()
 	int big[256];
 	int cnt;
 	int fd;
+	int plus_flag, num;
 
 	sc_memoryInit();
 	sc_memorySet(0, 0x4001);
@@ -21,6 +22,8 @@ int main()
 	bc_bigcharread(fd, big, 128, &cnt);
 	
 	refresh_gui(big, 36);
+	scan_num(&plus_flag, &num);
+	printf("%d %x\n", plus_flag, num);
 	close(fd);
 	
 	return 0;

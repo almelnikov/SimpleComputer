@@ -18,6 +18,7 @@ void print_labels();
 void print_counter();
 int print_mcell(int *bigchars);
 void refresh_gui(int *big, int position);
+int scan_num(int *plus_flag, int *n);
 int main();
 
 #endif /* __GUARD_SIMLECOMPUTER_H */
