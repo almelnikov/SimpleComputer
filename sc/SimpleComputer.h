@@ -2,6 +2,8 @@
 #define __GUARD_SIMLECOMPUTER_H
 
 #include <sys/types.h>
+#include <sys/time.h>
+#include <signal.h>
 #include <fcntl.h>
 #include "myTerm.h"
 #include "myBigChars.h"
@@ -11,6 +13,7 @@
 extern int inst_counter;
 extern int accumulator;
 extern int big_chars[256];
+extern int cursor_pos;
 
 void print_keys(int x, int y);
 void print_flags(int x, int y);
@@ -27,6 +30,10 @@ int change_cnt(int pos);
 int change_mcell(int pos);
 int memory_save(int position);
 int memory_load(int position);
+void set_signals();
+void timer_handler();
+void usrsig_handler();
+
 int main();
 
 #endif /* __GUARD_SIMLECOMPUTER_H */

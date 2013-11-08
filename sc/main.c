@@ -3,6 +3,7 @@
 int inst_counter;
 int accumulator;
 int big_chars[256];
+int cursor_pos;
 
 int main()
 {
@@ -30,54 +31,77 @@ int main()
 	}
 	bc_bigcharread(fd, big_chars, 128, &cnt);
 	close(fd);
+	set_signals();
 	setbuf(stdout, NULL);
 	while (!exit_flag) {
 		if (!refresh_flag)
 			refresh_gui(position);
 		rk_readkey(&key);
-		switch (key) {
-			case KEY_up:
-				if (cursor_y != 0)
-					cursor_y--;
+		if (!BIT_CHECK(sc_reg_flags, FLAG_INTERRUPT)) {
+			switch (key) {
+				case KEY_up:
+					if (cursor_y != 0)
+						cursor_y--;
 				else
-					cursor_y = 9;
-				refresh_flag = 0;
+						cursor_y = 9;
+					refresh_flag = 0;
+					break;
+				case KEY_down:
+					cursor_y = (cursor_y + 1) % 10;
+					refresh_flag = 0;
+					break;
+				case KEY_left:
+					if (cursor_x != 0)
+						cursor_x--;
+					else
+						cursor_x = 9;
+					break;
+					refresh_flag = 0;
+				case KEY_right:
+					cursor_x = (cursor_x + 1) % 10;
+					refresh_flag = 0;
 				break;
-			case KEY_down:
-				cursor_y = (cursor_y + 1) % 10;
-				refresh_flag = 0;
-				break;
-			case KEY_left:
-				if (cursor_x != 0)
-					cursor_x--;
-				else
-					cursor_x = 9;
-				break;
-				refresh_flag = 0;
-			case KEY_right:
-				cursor_x = (cursor_x + 1) % 10;
-				refresh_flag = 0;
-				break;
-			case KEY_f5:
-				refresh_flag = change_acc(position);
-				break;
-			case KEY_f6:
-				refresh_flag = change_cnt(position);
-				break;
-			case KEY_enter:
-				refresh_flag = change_mcell(position);
-				break;
-			case KEY_s:
-				memory_save(position);
-				refresh_flag = 1;
-				break;
-			case KEY_l:
-				memory_load(position);
-				refresh_flag = 1;
-				break;
-			case KEY_q:
-				exit(0);
-				break;
+				case KEY_f5:
+					refresh_flag = change_acc(position);
+					break;
+				case KEY_f6:
+					refresh_flag = change_cnt(position);
+					break;
+				case KEY_enter:
+					refresh_flag = change_mcell(position);
+					break;
+				case KEY_s:
+					memory_save(position);
+					refresh_flag = 1;
+					break;
+				case KEY_l:
+					memory_load(position);
+					refresh_flag = 1;
+					break;
+			}
+		}
+		if (key == KEY_q)
+			exit(0);
+		else
+		if (key == KEY_i) {
+			raise(SIGUSR1);
+			position = 0;
+			cursor_x = 0;
+			cursor_y = 0;
+		}
+		else
+		if (key == KEY_r) {
+			if (!BIT_CHECK(sc_reg_flags, FLAG_INTERRUPT)) {
+				BIT_SET(sc_reg_flags, FLAG_INTERRUPT);
+				timer_handler();
+			}
+			else {
+				alarm(0);
+				BIT_CLEAR(sc_reg_flags, FLAG_INTERRUPT);
+				position = inst_counter;
+				cursor_x = inst_counter % 10;
+				cursor_y = inst_counter / 10;
+			}
 		}
 		position = cursor_y * 10 + cursor_x;
 	}
