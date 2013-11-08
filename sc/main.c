@@ -12,7 +12,7 @@ int main()
 	int cursor_x = 0;
 	int cursor_y = 0;
 	int position = 0;
-	int exit_flag = 0;
+	int exit_flag = 0, refresh_flag = 0;
 	enum keys key;
 
 	sc_memoryInit();
@@ -29,9 +29,11 @@ int main()
 		return -1;
 	}
 	bc_bigcharread(fd, big_chars, 128, &cnt);
+	close(fd);
 	setbuf(stdout, NULL);
 	while (!exit_flag) {
-		refresh_gui(position);
+		if (!refresh_flag)
+			refresh_gui(position);
 		rk_readkey(&key);
 		switch (key) {
 			case KEY_up:
@@ -39,9 +41,11 @@ int main()
 					cursor_y--;
 				else
 					cursor_y = 9;
+				refresh_flag = 0;
 				break;
 			case KEY_down:
 				cursor_y = (cursor_y + 1) % 10;
+				refresh_flag = 0;
 				break;
 			case KEY_left:
 				if (cursor_x != 0)
@@ -49,17 +53,19 @@ int main()
 				else
 					cursor_x = 9;
 				break;
+				refresh_flag = 0;
 			case KEY_right:
 				cursor_x = (cursor_x + 1) % 10;
+				refresh_flag = 0;
 				break;
 			case KEY_f5:
-				change_acc(position);
+				refresh_flag = change_acc(position);
 				break;
 			case KEY_f6:
-				change_cnt(position);
+				refresh_flag = change_cnt(position);
 				break;
 			case KEY_enter:
-				change_mcell(position);
+				refresh_flag = change_mcell(position);
 				break;
 			case KEY_q:
 				exit(0);
@@ -67,11 +73,6 @@ int main()
 		}
 		position = cursor_y * 10 + cursor_x;
 	}
-	/*
-	scan_num(&plus_flag, &num);
-	printf("%d %x\n", plus_flag, num);
-	*/
-	close(fd);
 	
 	return 0;
 }
