@@ -67,6 +67,14 @@ int main()
 			case KEY_enter:
 				refresh_flag = change_mcell(position);
 				break;
+			case KEY_s:
+				memory_save(position);
+				refresh_flag = 1;
+				break;
+			case KEY_l:
+				memory_load(position);
+				refresh_flag = 1;
+				break;
 			case KEY_q:
 				exit(0);
 				break;

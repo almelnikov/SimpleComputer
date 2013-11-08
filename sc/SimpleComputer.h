@@ -24,6 +24,8 @@ int scan_num(int *plus_flag, int *n);
 int change_acc(int pos);
 int change_cnt(int pos);
 int change_mcell(int pos);
+int memory_save(int position);
+int memory_load(int position);
 int main();
 
 #endif /* __GUARD_SIMLECOMPUTER_H */
