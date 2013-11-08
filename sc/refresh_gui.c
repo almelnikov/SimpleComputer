@@ -10,6 +10,7 @@ void refresh_gui(int position)
 	/* print accumulator */
 	mt_gotoXY(70, 2);
 	printf("%04X", accumulator);
+	print_operation(position);
 	print_memory(2, 2, position);
 	print_flags(68, 11);
 	print_mcell(big_chars, position);
