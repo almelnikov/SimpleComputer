@@ -1,8 +1,9 @@
 #include "SimpleComputer.h"
 
-void timer_handler()
+void timer_handler(int sig)
 {
 	refresh_gui(inst_counter);
 	inst_counter++;
-	alarm(1);
+	if (!BIT_CHECK(sc_reg_flags, FLAG_INTERRUPT))
+		alarm(1);
 }

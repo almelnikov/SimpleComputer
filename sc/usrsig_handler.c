@@ -1,6 +1,6 @@
 #include "SimpleComputer.h"
 
-void usrsig_handler()
+void usrsig_handler(int sig)
 {
 	alarm(0);
 	sc_memoryInit();

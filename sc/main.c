@@ -18,6 +18,7 @@ int main()
 
 	sc_memoryInit();
 	sc_regInit();
+	sc_regSet(FLAG_INTERRUPT, 1);
 	/*
 	sc_memorySet(0, 0x4001);
 	sc_memorySet(54, 0x999);
@@ -37,7 +38,7 @@ int main()
 		if (!refresh_flag)
 			refresh_gui(position);
 		rk_readkey(&key);
-		if (!BIT_CHECK(sc_reg_flags, FLAG_INTERRUPT)) {
+		if (BIT_CHECK(sc_reg_flags, FLAG_INTERRUPT)) {
 			switch (key) {
 				case KEY_up:
 					if (cursor_y != 0)
@@ -46,34 +47,48 @@ int main()
 						cursor_y = 9;
 					refresh_flag = 0;
 					break;
+					
 				case KEY_down:
 					cursor_y = (cursor_y + 1) % 10;
 					refresh_flag = 0;
 					break;
+					
 				case KEY_left:
 					if (cursor_x != 0)
 						cursor_x--;
 					else
 						cursor_x = 9;
-					break;
 					refresh_flag = 0;
+					break;
 				case KEY_right:
 					cursor_x = (cursor_x + 1) % 10;
 					refresh_flag = 0;
-				break;
+					break;
+					
 				case KEY_f5:
 					refresh_flag = change_acc(position);
 					break;
+					
 				case KEY_f6:
 					refresh_flag = change_cnt(position);
 					break;
+					
 				case KEY_enter:
 					refresh_flag = change_mcell(position);
 					break;
+					
+				case KEY_t:
+					timer_handler(SIGALRM);
+					position = inst_counter;
+					cursor_x = inst_counter % 10;
+					cursor_y = inst_counter / 10;
+					break;
+					
 				case KEY_s:
 					memory_save(position);
 					refresh_flag = 1;
 					break;
+					
 				case KEY_l:
 					memory_load(position);
 					refresh_flag = 1;
@@ -91,13 +106,13 @@ int main()
 		}
 		else
 		if (key == KEY_r) {
-			if (!BIT_CHECK(sc_reg_flags, FLAG_INTERRUPT)) {
-				BIT_SET(sc_reg_flags, FLAG_INTERRUPT);
-				timer_handler();
+			if (BIT_CHECK(sc_reg_flags, FLAG_INTERRUPT)) {
+				sc_regSet(FLAG_INTERRUPT, 0);
+				timer_handler(SIGALRM);
 			}
 			else {
 				alarm(0);
-				BIT_CLEAR(sc_reg_flags, FLAG_INTERRUPT);
+				sc_regSet(FLAG_INTERRUPT, 1);
 				position = inst_counter;
 				cursor_x = inst_counter % 10;
 				cursor_y = inst_counter / 10;
