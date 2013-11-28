@@ -2,6 +2,7 @@
 *.a
 *~
 SimpleComputer
+sat
 tests/test1
 tests/test2
 tests/test_bc
