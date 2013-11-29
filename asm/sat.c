@@ -63,16 +63,17 @@ int pars_line(char *str, int *addr, int *value)
 	int flag_assign = 0;
 	
 	ptr = strchr(str, ';');
-	*ptr = '\0';
+	if (ptr != NULL)
+		*ptr = '\0';
 	ptr = strtok(str, " \t");
 	if (ptr == NULL)
-		return ERR_FEW;
+		return EMPTY_STR;
 	if (sscanf(ptr, "%d", addr) != 1) {
 		return ERR_ARG1;
 	}
 	if ((*addr < 0) || (*addr >= MEMSIZE))
 		return ERR_ARG1;
-	ptr = strtok(str, " \t");
+	ptr = strtok(NULL, " \t");
 	if (ptr == NULL)
 		return ERR_FEW;
 	else
@@ -83,22 +84,22 @@ int pars_line(char *str, int *addr, int *value)
 		if (command == -1)
 			return ERR_ARG2;
 	}
+	ptr = strtok(NULL, " \t");
+	if (ptr == NULL)
+		return ERR_FEW;
 	if (!flag_assign) {
-		ptr = strtok(str, " \t");
-		if (ptr == NULL)
-			return ERR_FEW;
 		if (sscanf(ptr, "%d", &operand) != 1) {
 			return ERR_ARG3;
 		}
 	}
 	else {
-		if (str2sc_word(str, value) == -1) {
+		if (str2sc_word(ptr, value) == -1) {
 			return ERR_ARG3;
 		}
 	}
 	if ((operand < 0) || (operand >= MEMSIZE))
 		return ERR_ARG3;
-	ptr = strtok(str, " \t");
+	ptr = strtok(NULL, " \t");
 	if (ptr != NULL)
 		return ERR_MANY;
 	if (!flag_assign) {
@@ -121,8 +122,11 @@ int test_argv(char *argv[])
 
 int main(int argc, char *argv[])
 {
-	char buf[256];
+	char buf[256], line[256];
+	char add_mem[MEMSIZE];
 	FILE *input, *output;
+	int value, addr, line_cnt = 1;
+	int err;
 	
 	if (argc != 3) {
 		perror("Incorrect arguments!\n");
@@ -140,5 +144,24 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Cannot open file:%s", argv[2]);
 		exit(1);
 	}
+	
+	memset(add_mem, 0, MEMSIZE);
+	memset(sc_memory, 0, MEMSIZE * sizeof(int));
+	while (fgets(line, 256, input)) {
+		strcpy(buf, line);
+		err = pars_line(buf, &addr, &value);
+		if (err == 0) {
+			if (add_mem[addr] == 0) {
+				sc_memory[addr] = value;
+			}
+			else {
+				printf("%d: Command with %d addres already exists\n%s",  line_cnt, addr, line);
+			}
+		}
+		line_cnt++;
+	}
+	fwrite(sc_memory, 1, MEMSIZE*sizeof(int), output);
+	fclose(input);
+	fclose(output);
 	return 0;
 }
