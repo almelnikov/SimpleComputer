@@ -1,6 +1,6 @@
 #include "SimpleComputer.h"
 
-void ALU(int command, int operand)
+int ALU(int command, int operand)
 {
 	int tmp;
 
@@ -20,8 +20,10 @@ void ALU(int command, int operand)
 		case 0x33: /* DIV */
 			if (sc_memory[operand] != 0)
 				accumulator /= sc_memory[operand];
-			else
+			else {
 				sc_regSet(FLAG_DIVISION, 1);
+				return -1;
+			}
 			break;
 	}
 	if ((accumulator > 0x7FFF) || (accumulator < 0)) {
@@ -30,4 +32,5 @@ void ALU(int command, int operand)
 	}
 	else
 		sc_regSet(FLAG_OVERFLOW, 0);
+	return 0;
 }

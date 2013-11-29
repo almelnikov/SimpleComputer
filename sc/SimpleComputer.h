@@ -33,7 +33,8 @@ int memory_load(int position);
 void set_signals();
 void timer_handler();
 void usrsig_handler();
-
+void CU();
+int ALU(int command, int operand);
 int main();
 
 #endif /* __GUARD_SIMLECOMPUTER_H */

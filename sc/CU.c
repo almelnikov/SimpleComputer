@@ -20,7 +20,8 @@ void CU()
 		return;
 	}
 	if ((command >= 0x30) && (command <= 0x33)) {
-		ALU(command, operand);
+		if (ALU(command, operand) != 0)
+			sc_regSet(FLAG_INTERRUPT, 1);
 	}
 	else {
 		switch (command) {
