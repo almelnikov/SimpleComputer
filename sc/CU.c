@@ -3,6 +3,7 @@
 void CU()
 {
 	int command, operand;
+	int flag;
 	
 	if (inst_counter >= MEMSIZE) {
 		sc_regSet(FLAG_OUTMEM, 1);
@@ -60,7 +61,9 @@ void CU()
 				break;
 			
 			case 0x59: /* JNP */
-				
+				sc_regGet(FLAG_ODD, &flag);
+				if (flag == 1)
+					inst_counter = operand - 1;
 				break;
 		}
 	}

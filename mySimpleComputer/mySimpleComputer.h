@@ -13,6 +13,7 @@
 #define FLAG_OUTMEM 2
 #define FLAG_INTERRUPT 3
 #define FLAG_COMMAND 4
+#define FLAG_ODD 5
 
 #define ERR_WRONG_ADDR -1
 #define ERR_OPEN_FILE -2

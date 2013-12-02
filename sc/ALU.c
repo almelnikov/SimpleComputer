@@ -32,5 +32,6 @@ int ALU(int command, int operand)
 	}
 	else
 		sc_regSet(FLAG_OVERFLOW, 0);
+	sc_regSet(FLAG_ODD, accumulator & 1);
 	return 0;
 }
