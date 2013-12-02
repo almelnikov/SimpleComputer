@@ -13,4 +13,11 @@
 #define ERR_MANY -5
 #define EMPTY_STR 1
 
+int str2sc_word(char *str, int *value);
+int str2command(char *str);
+int pars_line(char *str, int *addr, int *value);
+void print_error(char *line, int line_cnt, int err);
+int test_argv(char *argv[]);
+int main(int argc, char *argv[]);
+
 #endif /* __GUARD_SAT_H */
