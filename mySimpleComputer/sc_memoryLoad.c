@@ -11,7 +11,7 @@ int sc_memoryLoad(char *filename)
 		return ERR_OPEN_FILE;
 	nreaden = fread(sc_memory, sizeof(*sc_memory) * 100, 1, save);
 	for (i = 0; i < 100; i++)
-		sc_memory[i] &= 0x7FF;
+		sc_memory[i] &= 0x7FFF;
 	fclose(save);
 	if (nreaden != 1)
 		return ERR_FILE_SIZE;
