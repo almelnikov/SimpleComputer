@@ -3,7 +3,7 @@
 void CU()
 {
 	int command, operand;
-	int flag;
+	int flag, read_suc;
 	
 	if (inst_counter >= MEMSIZE) {
 		sc_regSet(FLAG_OUTMEM, 1);
@@ -27,11 +27,14 @@ void CU()
 	else {
 		switch (command) {
 			case 0x10: /* READ */
-				
+				do {
+					read_suc = read_mcell(operand);
+				} while(read_suc != 0);
 				break;
 				
 			case 0x11: /* WRITE */
-				
+				write_used = 1;
+				write_val = sc_memory[operand];
 				break;
 			
 			case 0x20: /* LOAD */

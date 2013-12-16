@@ -4,6 +4,7 @@ int inst_counter;
 int accumulator;
 int big_chars[256];
 int cursor_pos;
+int write_used, write_val;
 
 int main()
 {
