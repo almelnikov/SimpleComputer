@@ -26,6 +26,10 @@ int ALU(int command, int operand)
 			}
 			break;
 	}
+	if ((accumulator & 1) == 0)
+		sc_regSet(FLAG_ODD, 0);
+	else
+		sc_regSet(FLAG_ODD, 1);
 	if ((accumulator > 0x7FFF) || (accumulator < 0)) {
 		accumulator &= 0x7FFF;
 		sc_regSet(FLAG_OVERFLOW, 1);
