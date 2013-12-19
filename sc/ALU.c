@@ -10,7 +10,14 @@ int ALU(int command, int operand)
 			break;
 			
 		case 0x31: /* SUB */
-			accumulator -= sc_memory[operand];
+			if (((sc_memory[operand] >> 14) & 1) == 1)
+				tmp = sc_memory[operand] | (~0x7FFF);
+			else
+				tmp = sc_memory[operand];
+			accumulator -= tmp;
+			if ((accumulator > ((int)(~0x7FFF))) && (accumulator <= 0x7FFF)) {
+				accumulator &= 0x7FFF;
+			}
 			break;
 		
 		case 0x32: /* MUL */
