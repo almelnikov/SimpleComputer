@@ -53,7 +53,10 @@ int test_argv(char *argv[])
 int main(int argc, char *argv[])
 {
 	FILE *input, *output;
-
+	char asm_filename[256];
+	char line[256], keyw_str[256];
+	int label, keyw;
+	
 	if (argc != 3) {
 		perror("Incorrect arguments!\n");
 		exit(1);
@@ -62,5 +65,21 @@ int main(int argc, char *argv[])
 		perror("Incorrect arguments!\n");
 		exit(1);
 	}
+	strcpy(asm_filename, argv[2]);
+	strcat(asm_filename, ".sa");
+	if ((input = fopen(argv[2], "rb")) == NULL) {
+		fprintf(stderr, "Cannot open file:%s", argv[2]);
+		exit(1);
+	}
+	if ((output = fopen(asm_filename, "wb")) == NULL) {
+		fprintf(stderr, "Cannot open file:%s", asm_filename);
+		exit(1);
+	}
+	
+	while (fgets(line, 256, input)) {
+		get_label_and_keyw(line, &label, keyw_str);
+		keyw = get_keyword_code(line);
+	}
+
 	return 0;
 }
