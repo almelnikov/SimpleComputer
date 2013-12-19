@@ -83,10 +83,48 @@ int test_argv(char *argv[])
 		return 0;
 }
 
+int is_value(char *str)
+{
+	if ((str[0] >= 'A') && (str[0] <= 'Z')) {
+		if (str[1] == '\0')
+			return 0;
+		else
+			return -1;
+	}
+	else
+		return -1;
+}
+
+int get_val_addr(char c)
+{
+	if ((c >= 'A') && (c <= 'Z')) {
+		if (val_table[c-'A'] < 0) {
+			val_table[c-'A'] = val_pos;
+			memory[val_pos].is_val = 1;
+			val_pos++;
+		}
+		else
+			return val_table[c-'A'];
+	}
+	else
+		return -1;
+}
+
 int parse_line(char *str, int key_w)
 {
+	char *ptr;
+	char token[256];
+	
 	switch (key_w) {
 		case KEYW_INPUT:
+			ptr = cpy_token(token, str);
+			if ((!srt_is_empty(ptr)) && (!is_value(token)) {
+				code_pos++;
+			}
+			else {
+				perror("Not a valid value\n");
+				exit(1);
+			}
 			break;
 	}
 	return 0;
