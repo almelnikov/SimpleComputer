@@ -118,7 +118,23 @@ int parse_line(char *str, int key_w)
 	switch (key_w) {
 		case KEYW_INPUT:
 			ptr = cpy_token(token, str);
-			if ((!srt_is_empty(ptr)) && (!is_value(token)) {
+			if ((!srt_is_empty(ptr)) && (!is_value(token))) {
+				memory[code_pos].is_val = 0;
+				memory[code_pos].command = 0x10; // READ
+				memory[code_pos].operand = get_val_addr(token[0]);
+				code_pos++;
+			}
+			else {
+				perror("Not a valid value\n");
+				exit(1);
+			}
+			break;
+		case KEYW_OUTPUT:
+			ptr = cpy_token(token, str);
+			if ((!srt_is_empty(ptr)) && (!is_value(token))) {
+				memory[code_pos].is_val = 0;
+				memory[code_pos].command = 0x11; // WRITE
+				memory[code_pos].operand = get_val_addr(token[0]);
 				code_pos++;
 			}
 			else {
