@@ -1,7 +1,9 @@
 #include "basic.h"
 
 int val_table[26];
-struct b_label lables[100];
+struct b_label labels[100];
+struct memory_t memory[100];
+int code_pos = 0, val_pos = 99, label_pos = 0;
 
 char *get_label_and_keyw(char *str, int *label, char *keyword)
 {
@@ -39,6 +41,37 @@ int get_keyword_code(char *str)
 		return -1;
 }
 
+int is_delim(char c)
+{
+	if ((c == ' ') || (c == '\t') || (c == '\0') || (c == '\n'))
+		return 0;
+	else
+		return -1;
+}
+
+char *cpy_token(char *token, char *str)
+{
+	int i;
+	
+	for (i = 0; (str[i] == ' ') || (str[i] == '\t'); i++);
+	str += i;
+	for (i = 0; is_delim(str[i]) != 0; i++) {
+		token[i] = str[i];
+	}
+	str[i] = '\0';
+}
+
+int srt_is_empty(char *str)
+{
+	int i;
+	
+	for (; (str[i] == ' ') || (str[i] == '\t'); i++);
+	if ((str[i] == '\n') || (str[i] == '\0'))
+		return 0;
+	else
+		return -1;
+}
+
 int test_argv(char *argv[])
 {
 	char *ptr1;
@@ -50,11 +83,22 @@ int test_argv(char *argv[])
 		return 0;
 }
 
+int parse_line(char *str, int key_w)
+{
+	switch (key_w) {
+		case KEYW_INPUT:
+			break;
+	}
+	return 0;
+}
+
 int main(int argc, char *argv[])
 {
 	FILE *input, *output;
 	char asm_filename[256];
 	char line[256], keyw_str[256];
+	char *str;
+	int i;
 	int label, keyw;
 	
 	if (argc != 3) {
@@ -76,9 +120,24 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	
+	for (i = 0; i < 26; i++)
+		val_table[i] = -1;
 	while (fgets(line, 256, input)) {
-		get_label_and_keyw(line, &label, keyw_str);
+		if (srt_is_empty(line) == 0)
+			continue;
+		str = get_label_and_keyw(line, &label, keyw_str);
+		if (str == NULL) {
+			perror("Unknown operator!\n");
+			exit(1);
+		}
 		keyw = get_keyword_code(line);
+		if (keyw < 0) {
+			perror("Unknown operator!\n");
+			exit(1);
+		}
+		labels[label_pos].label = label;
+		labels[label_pos].pos = code_pos;
+		label_pos++;
 	}
 
 	return 0;

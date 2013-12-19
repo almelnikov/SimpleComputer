@@ -10,6 +10,12 @@ struct b_label {
 	int pos;
 };
 
+struct memory_t {
+	int is_val;
+	int command;
+	int operand;
+};
+
 enum keywords {
 	KEYW_REM = 1,
 	KEYW_INPUT = 2,
