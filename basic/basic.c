@@ -185,6 +185,7 @@ int parse_line(char *str, int key_w)
 	int readen, label;
 	int if_val1, if_val2; // Адресс первой и второй переменной логического выр.
 	char sign;
+	int keyw;
 	
 	switch (key_w) {
 		case KEYW_INPUT:
@@ -309,6 +310,17 @@ int parse_line(char *str, int key_w)
 			memory[code_pos+3].command = 0x40; // JMP
 			memory[code_pos+3].operand = 0; //
 			code_pos += 4;
+			ptr = cpy_token(token, ptr);
+			keyw = get_keyword_code(token);
+			if (keyw < 0) {
+				perror("Unknown operator!\n");
+				exit(1);
+			}
+			if (keyw == KEYW_IF) {
+				perror("Multiple if!\n");
+				exit(1);
+			}
+			parse_line(ptr, keyw);
 			break;
 	}
 	return 0;
@@ -352,7 +364,7 @@ int main(int argc, char *argv[])
 			perror("Unknown operator!\n");
 			exit(1);
 		}
-		keyw = get_keyword_code(line);
+		keyw = get_keyword_code(keyw_str);
 		if (keyw < 0) {
 			perror("Unknown operator!\n");
 			exit(1);
@@ -360,7 +372,10 @@ int main(int argc, char *argv[])
 		labels[label_pos].label = label;
 		labels[label_pos].pos = code_pos;
 		label_pos++;
+		parse_line(str, keyw);
 	}
+	
+	save_asm(output);
 	fclose(output);
 	
 	fclose(input);
