@@ -5,6 +5,63 @@ struct b_label labels[100];
 struct memory_t memory[100];
 int code_pos = 0, val_pos = 99, label_pos = 0;
 
+void save_asm(FILE *file)
+{
+	int i;
+
+	for (i = 0; i < code_pos; i++) {
+		switch (memory[i].command) {
+			case 0x10: //READ
+				fprintf(file, "%02d READ %d\n", i, memory[i].operand);
+			break;
+			
+			case 0x11: //WRITE
+				fprintf(file, "%02d WRITE %d\n", i, memory[i].operand);
+			break;
+			
+			case 0x20: //LOAD
+				fprintf(file, "%02d LOAD %d\n", i, memory[i].operand);
+			break;
+			
+			case 0x21: //STORE
+				fprintf(file, "%02d STORE %d\n", i, memory[i].operand);
+			break;
+			
+			case 0x30: //ADD
+				fprintf(file, "%02d ADD %d\n", i, memory[i].operand);
+			break;
+			
+			case 0x31: //SUB
+				fprintf(file, "%02d SUB %d\n", i, memory[i].operand);
+			break;
+			
+			case 0x32: //DIVIDE
+				fprintf(file, "%02d DIVIDE %d\n", i, memory[i].operand);
+			break;
+			
+			case 0x33: //MUL
+				fprintf(file, "%02d MUL %d\n", i, memory[i].operand);
+			break;
+			
+			case 0x40: //JUMP
+				fprintf(file, "%02d JUMP %d\n", i, memory[i].operand);
+			break;
+			
+			case 0x41: //JNEG
+				fprintf(file, "%02d JNEG %d\n", i, memory[i].operand);
+			break;
+			
+			case 0x42: //JZ
+				fprintf(file, "%02d JZ %d\n", i, memory[i].operand);
+			break;
+			
+			case 0x43: //HALT
+				fprintf(file, "%02d HALT %d\n", i, memory[i].operand);
+			break;
+		}
+	}
+}
+
 int find_label(int label)
 {
 	int i;
@@ -46,7 +103,7 @@ int get_keyword_code(char *str)
 		return KEYW_IF;
 	else if (strcmp(str, "LET") == 0)
 		return KEYW_LET;
-	else if ((strcmp(str, "END") == 0) || ((strcmp(str, "END\n") == 0)
+	else if ((strcmp(str, "END") == 0) || (strcmp(str, "END\n") == 0))
 		return KEYW_END;
 	else
 		return -1;
@@ -234,6 +291,8 @@ int main(int argc, char *argv[])
 		labels[label_pos].pos = code_pos;
 		label_pos++;
 	}
-
+	fclose(output);
+	
+	fclose(input);
 	return 0;
 }
