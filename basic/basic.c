@@ -183,6 +183,7 @@ int parse_line(char *str, int key_w)
 	char *ptr;
 	char token[256];
 	int readen, label;
+	int if_val1, if_val2; // Адресс первой и второй переменной логического выр.
 	
 	switch (key_w) {
 		case KEYW_INPUT:
@@ -239,6 +240,15 @@ int parse_line(char *str, int key_w)
 			memory[code_pos].command = 0x43; // HALT
 			memory[code_pos].operand = 0;
 			code_pos++;
+			break;
+		
+		case KEYW_IF:
+			ptr = cpy_token(token, str);
+			if (is_value(token) != 0) {
+				exit(1);
+			}
+			if_val1 = get_val_addr(token[0]);
+			ptr = cpy_token(token, str);
 			break;
 	}
 	return 0;
