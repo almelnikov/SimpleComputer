@@ -127,6 +127,8 @@ char *cpy_token(char *token, char *str)
 		token[i] = str[i];
 	}
 	token[i] = '\0';
+	
+	return str+i;
 }
 
 int srt_is_empty(char *str)
@@ -179,7 +181,7 @@ int get_val_addr(char c)
 
 int parse_line(char *str, int key_w)
 {
-	char *ptr;
+	char *ptr, *ptr_cpy;
 	char token[256];
 	int readen, label;
 	int if_val1, if_val2; // Адресс первой и второй переменной логического выр.
