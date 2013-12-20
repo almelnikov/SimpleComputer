@@ -184,6 +184,7 @@ int parse_line(char *str, int key_w)
 	char token[256];
 	int readen, label;
 	int if_val1, if_val2; // Адресс первой и второй переменной логического выр.
+	char sign;
 	
 	switch (key_w) {
 		case KEYW_INPUT:
@@ -248,7 +249,62 @@ int parse_line(char *str, int key_w)
 				exit(1);
 			}
 			if_val1 = get_val_addr(token[0]);
-			ptr = cpy_token(token, str);
+			
+			ptr = cpy_token(token, ptr);
+			if (strcmp(token, "<") == 0)
+				sign = '<';
+			else if (strcmp(token, ">") == 0)
+				sign = '>';
+			else if (strcmp(token, "=") == 0)
+				sign = '=';
+			else {
+				perror("Unknown logical opration!\n");
+				exit(1);
+			}
+			
+			ptr = cpy_token(token, ptr);
+			if (is_value(token) != 0) {
+				exit(1);
+			}
+			if_val2 = get_val_addr(token[0]);
+			
+			switch (sign) {
+				case '<':
+					memory[code_pos].is_val = 0;
+					memory[code_pos].command = 0x20; // LOAD
+					memory[code_pos].operand = if_val1;
+					memory[code_pos+1].is_val = 0;
+					memory[code_pos+1].command = 0x31; // SUB
+					memory[code_pos+1].operand = if_val2;
+					memory[code_pos+2].is_val = 0;
+					memory[code_pos+2].command = 0x41; // JNEG
+					memory[code_pos+2].operand = 0; // Устанавливается после обработки внутреннего оператора
+					break;
+				
+				case '>':
+					memory[code_pos].is_val = 0;
+					memory[code_pos].command = 0x20; // LOAD
+					memory[code_pos].operand = if_val2;
+					memory[code_pos+1].is_val = 0;
+					memory[code_pos+1].command = 0x31; // SUB
+					memory[code_pos+1].operand = if_val1;
+					memory[code_pos+2].is_val = 0;
+					memory[code_pos+2].command = 0x41; // JNEG
+					memory[code_pos+2].operand = 0; // Устанавливается после обработки внутреннего оператора
+					break;
+				
+				case '=':
+					memory[code_pos].is_val = 0;
+					memory[code_pos].command = 0x20; // LOAD
+					memory[code_pos].operand = if_val1;
+					memory[code_pos+1].is_val = 0;
+					memory[code_pos+1].command = 0x31; // SUB
+					memory[code_pos+1].operand = if_val2;
+					memory[code_pos+2].is_val = 0;
+					memory[code_pos+2].command = 0x42; // JZ
+					memory[code_pos+2].operand = 0; // Устанавливается после обработки внутреннего оператора
+					break;
+			}
 			break;
 	}
 	return 0;
