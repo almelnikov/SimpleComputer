@@ -278,7 +278,7 @@ int parse_line(char *str, int key_w)
 					memory[code_pos+1].operand = if_val2;
 					memory[code_pos+2].is_val = 0;
 					memory[code_pos+2].command = 0x41; // JNEG
-					memory[code_pos+2].operand = 0; // Устанавливается после обработки внутреннего оператора
+					memory[code_pos+2].operand = code_pos + 4;
 					break;
 				
 				case '>':
@@ -290,7 +290,7 @@ int parse_line(char *str, int key_w)
 					memory[code_pos+1].operand = if_val1;
 					memory[code_pos+2].is_val = 0;
 					memory[code_pos+2].command = 0x41; // JNEG
-					memory[code_pos+2].operand = 0; // Устанавливается после обработки внутреннего оператора
+					memory[code_pos+2].operand = code_pos + 4;
 					break;
 				
 				case '=':
@@ -302,9 +302,13 @@ int parse_line(char *str, int key_w)
 					memory[code_pos+1].operand = if_val2;
 					memory[code_pos+2].is_val = 0;
 					memory[code_pos+2].command = 0x42; // JZ
-					memory[code_pos+2].operand = 0; // Устанавливается после обработки внутреннего оператора
+					memory[code_pos+2].operand = code_pos + 4;
 					break;
 			}
+			memory[code_pos+3].is_val = 0;
+			memory[code_pos+3].command = 0x40; // JMP
+			memory[code_pos+3].operand = 0; //
+			code_pos += 4;
 			break;
 	}
 	return 0;
