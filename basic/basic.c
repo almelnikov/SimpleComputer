@@ -126,14 +126,14 @@ char *cpy_token(char *token, char *str)
 	for (i = 0; is_delim(str[i]) != 0; i++) {
 		token[i] = str[i];
 	}
-	str[i] = '\0';
+	token[i] = '\0';
 }
 
 int srt_is_empty(char *str)
 {
 	int i;
 	
-	for (; (str[i] == ' ') || (str[i] == '\t'); i++);
+	for (i = 0; (str[i] == ' ') || (str[i] == '\t'); i++);
 	if ((str[i] == '\n') || (str[i] == '\0'))
 		return 0;
 	else
@@ -169,10 +169,9 @@ int get_val_addr(char c)
 		if (val_table[c-'A'] < 0) {
 			val_table[c-'A'] = val_pos;
 			memory[val_pos].is_val = 1;
-			val_pos++;
+			val_pos--;
 		}
-		else
-			return val_table[c-'A'];
+		return val_table[c-'A'];
 	}
 	else
 		return -1;
