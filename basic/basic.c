@@ -46,7 +46,7 @@ int get_keyword_code(char *str)
 		return KEYW_IF;
 	else if (strcmp(str, "LET") == 0)
 		return KEYW_LET;
-	else if (strcmp(str, "END") == 0)
+	else if ((strcmp(str, "END") == 0) || ((strcmp(str, "END\n") == 0)
 		return KEYW_END;
 	else
 		return -1;
@@ -169,11 +169,20 @@ int parse_line(char *str, int key_w)
 				memory[code_pos].is_val = 0;
 				memory[code_pos].command = 0x40; // JUMP
 				memory[code_pos].operand = addr;
+				code_pos++;
 			}
 			else  {
 				perror("Not a valid value\n");
 				exit(1);
 			}
+			break;
+		
+		case KEYW_END:
+			memory[code_pos].is_val = 0;
+			memory[code_pos].command = 0x43; // HALT
+			memory[code_pos].operand = 0;
+			code_pos++;
+			break;
 	}
 	return 0;
 }
