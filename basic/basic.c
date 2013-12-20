@@ -5,6 +5,17 @@ struct b_label labels[100];
 struct memory_t memory[100];
 int code_pos = 0, val_pos = 99, label_pos = 0;
 
+int find_label(int label)
+{
+	int i;
+	
+	for (i = 0; i < label_pos; i++) {
+		if (labels[i].label == label)
+			return labels[i].pos;
+	}
+	return -1;
+}
+
 char *get_label_and_keyw(char *str, int *label, char *keyword)
 {
 	int cnt;
@@ -114,6 +125,7 @@ int parse_line(char *str, int key_w)
 {
 	char *ptr;
 	char token[256];
+	int readen, label;
 	
 	switch (key_w) {
 		case KEYW_INPUT:
@@ -129,6 +141,7 @@ int parse_line(char *str, int key_w)
 				exit(1);
 			}
 			break;
+		
 		case KEYW_OUTPUT:
 			ptr = cpy_token(token, str);
 			if ((!srt_is_empty(ptr)) && (!is_value(token))) {
@@ -142,6 +155,25 @@ int parse_line(char *str, int key_w)
 				exit(1);
 			}
 			break;
+		
+		case KEYW_GOTO:
+			readen = sscanf(str, "%d", &label);
+			if (readen == 1) {
+				int addr;
+				
+				addr = find_label(label);
+				if (addr < 0) {
+					perror("Label not found!\n");
+					exit(1);
+				}
+				memory[code_pos].is_val = 0;
+				memory[code_pos].command = 0x40; // JUMP
+				memory[code_pos].operand = addr;
+			}
+			else  {
+				perror("Not a valid value\n");
+				exit(1);
+			}
 	}
 	return 0;
 }
