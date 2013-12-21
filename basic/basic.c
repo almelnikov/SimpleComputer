@@ -249,6 +249,7 @@ void rpn_pars(char *rpn, int val)
 		exit(1);
 	}
 	addr = get_stack_addr(0);
+	add_code(0x20, addr);
 	add_code(0x21, val);
 }
 
