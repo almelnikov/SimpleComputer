@@ -9,6 +9,7 @@ int code_pos = 0, val_pos = 99, label_pos = 0;
 void save_asm(FILE *file)
 {
 	int i;
+	int high, low;
 
 	for (i = 0; i < code_pos; i++) {
 		switch (memory[i].command) {
@@ -59,6 +60,13 @@ void save_asm(FILE *file)
 			case 0x43: //HALT
 				fprintf(file, "%02d HALT %d\n", i, memory[i].operand);
 			break;
+		}
+	}
+	for (i = val_pos+1; i < 100; i++) {
+		if (memory[i].command != 0) {
+			high = (memory[i].command >> 7) & 0x7F;
+			low = memory[i].command & 0x7F;
+			fprintf(file, "%02d = +%02X%02X", i, high, low);
 		}
 	}
 }
@@ -181,6 +189,13 @@ int get_val_addr(char c)
 		return -1;
 }
 
+void add_const(int n)
+{
+	memory[val_pos].is_val = 1;
+	memory[val_pos].command = n;
+	val_pos--;
+}
+
 void add_code(int command, int operand)
 {
 	memory[code_pos].is_val = 0;
@@ -260,7 +275,7 @@ int parse_line(char *str, int key_w)
 	char rpn[256];
 	int readen, label;
 	int if_val1, if_val2; // Адресс первой и второй переменной логического выр.
-	int if_jmp;
+	int if_jmp, num;
 	char sign;
 	int keyw;
 	int val; // LET val
@@ -312,10 +327,16 @@ int parse_line(char *str, int key_w)
 		
 		case KEYW_IF:
 			ptr = cpy_token(token, str);
-			if (is_value(token) != 0) {
+			if (is_value(token) == 0) {
+				if_val1 = get_val_addr(token[0]);
+			}
+			else if (sscanf(token, "%d", &num) == 1) {
+				add_const(num);
+			}
+			else {
+				perror("Not a value or number!\n");
 				exit(1);
 			}
-			if_val1 = get_val_addr(token[0]);
 			
 			ptr = cpy_token(token, ptr);
 			if (strcmp(token, "<") == 0)
@@ -330,10 +351,16 @@ int parse_line(char *str, int key_w)
 			}
 			
 			ptr = cpy_token(token, ptr);
-			if (is_value(token) != 0) {
+			if (is_value(token) == 0) {
+				if_val2 = get_val_addr(token[0]);
+			}
+			else if (sscanf(token, "%d", &num) == 1) {
+				add_const(num);
+			}
+			else {
+				perror("Not a value or number!\n");
 				exit(1);
 			}
-			if_val2 = get_val_addr(token[0]);
 			
 			switch (sign) {
 				case '<':
