@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -g
 INCLUDE = -I../mySimpleComputer
 LIBS = -L../libs
-SRCS = basic.c
+SRCS = basic.c rpn.c
 OBJS = $(SRCS:.c=.o)
 
 .PHONY: clean
