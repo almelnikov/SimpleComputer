@@ -1,0 +1,7 @@
+10 REM some text
+20 INPUT A
+30 INPUT B
+40 LET C = A - B
+50 IF C < 1 LET C = (A - B) * C / B + A
+60 OUTPUT C
+70 END
