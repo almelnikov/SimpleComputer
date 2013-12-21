@@ -1,6 +1,7 @@
 #include "basic.h"
 
 int val_table[26];
+int stack_addr[100];
 struct b_label labels[100];
 struct memory_t memory[100];
 int code_pos = 0, val_pos = 99, label_pos = 0;
@@ -179,10 +180,33 @@ int get_val_addr(char c)
 		return -1;
 }
 
+void add_code(int command, int operand)
+{
+	memory[code_pos].is_val = 0;
+	memory[code_pos].command = operand;
+	memory[code_pos].operand = command;
+	code_pos++;
+}
+
+void rpn_pars(char *rpn)
+{
+	int i = 0;
+	int depth = 0;
+	
+	while (rpn[i] != '\0') {
+		if ((rpn[i] >= 'A') && (rpn[i] >= 'Z')) {
+			if (depth == 0) {
+			
+			}
+		}
+	}
+}
+
 int parse_line(char *str, int key_w)
 {
 	char *ptr, *ptr_cpy;
 	char token[256];
+	char rpn[256];
 	int readen, label;
 	int if_val1, if_val2; // Адресс первой и второй переменной логического выр.
 	char sign;
@@ -323,6 +347,16 @@ int parse_line(char *str, int key_w)
 			}
 			parse_line(ptr, keyw);
 			break;
+			
+			case KEYW_LET:
+				ptr = cpy_token(token, str);
+				if (strcmp(token, "=") != 0) {
+					perror("Uncorrect LET statement!\n");
+					exit(1);
+				}
+				translate_to_rpn(rpn, ptr);
+				rpn_pars(rpn);
+				break;
 	}
 	return 0;
 }

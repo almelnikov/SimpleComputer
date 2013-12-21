@@ -5,6 +5,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "rpn.h"
+
 struct b_label {
 	int label;
 	int pos;
