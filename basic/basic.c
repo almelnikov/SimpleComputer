@@ -172,6 +172,7 @@ int get_val_addr(char c)
 		if (val_table[c-'A'] < 0) {
 			val_table[c-'A'] = val_pos;
 			memory[val_pos].is_val = 1;
+			memory[val_pos].command = 0;
 			val_pos--;
 		}
 		return val_table[c-'A'];
@@ -183,23 +184,72 @@ int get_val_addr(char c)
 void add_code(int command, int operand)
 {
 	memory[code_pos].is_val = 0;
-	memory[code_pos].command = operand;
-	memory[code_pos].operand = command;
+	memory[code_pos].command = command;
+	memory[code_pos].operand = operand;
 	code_pos++;
 }
 
-void rpn_pars(char *rpn)
+int get_stack_addr(int n)
+{
+	if (stack_addr[n] < 0) {
+		stack_addr[n] = val_pos;
+		memory[code_pos].is_val = 1;
+		memory[code_pos].command = 0;
+		val_pos--;
+	}
+	return stack_addr[n];
+}
+
+void rpn_pars(char *rpn, int val)
 {
 	int i = 0;
 	int depth = 0;
+	int addr;
+	int st1, st2;
 	
 	while (rpn[i] != '\0') {
-		if ((rpn[i] >= 'A') && (rpn[i] >= 'Z')) {
-			if (depth == 0) {
-			
-			}
+		if ((rpn[i] >= 'A') && (rpn[i] <= 'Z')) {
+			addr = get_stack_addr(depth);
+			add_code(0x20, get_val_addr(rpn[i]));
+			add_code(0x21, addr);
+			depth++;
 		}
+		if ((rpn[i] == '+') || (rpn[i] == '-') || (rpn[i] == '*') || (rpn[i] == '/')) {
+			if (depth < 2) {
+				perror("Uncorrect LET statement\n");
+				exit(1);
+			}
+			st1 = get_stack_addr(depth - 1);
+			st2 = get_stack_addr(depth - 2);
+			add_code(0x20, st1);
+			switch (rpn[i]) {
+				case '+':
+					add_code(0x30, st2);
+					break;
+				
+				case '-':
+					add_code(0x31, st2);
+					break;
+				
+				case '/':
+					add_code(0x32, st2);
+					break;
+				
+				case '*':
+					add_code(0x33, st2);
+					break;
+			}
+			add_code(0x21, st2);
+			depth--;
+		}
+		i++;
 	}
+	if (depth != 1) {
+		perror("Uncorrect LET statement\n");
+		exit(1);
+	}
+	addr = get_stack_addr(0);
+	add_code(0x21, val);
 }
 
 int parse_line(char *str, int key_w)
@@ -211,15 +261,13 @@ int parse_line(char *str, int key_w)
 	int if_val1, if_val2; // Адресс первой и второй переменной логического выр.
 	char sign;
 	int keyw;
+	int val; // LET val
 	
 	switch (key_w) {
 		case KEYW_INPUT:
 			ptr = cpy_token(token, str);
 			if ((!srt_is_empty(ptr)) && (!is_value(token))) {
-				memory[code_pos].is_val = 0;
-				memory[code_pos].command = 0x10; // READ
-				memory[code_pos].operand = get_val_addr(token[0]);
-				code_pos++;
+				add_code(0x10, get_val_addr(token[0])); // READ
 			}
 			else {
 				perror("Not a valid value\n");
@@ -230,10 +278,7 @@ int parse_line(char *str, int key_w)
 		case KEYW_OUTPUT:
 			ptr = cpy_token(token, str);
 			if ((!srt_is_empty(ptr)) && (!is_value(token))) {
-				memory[code_pos].is_val = 0;
-				memory[code_pos].command = 0x11; // WRITE
-				memory[code_pos].operand = get_val_addr(token[0]);
-				code_pos++;
+				add_code(0x11, get_val_addr(token[0])); // WRITE
 			}
 			else {
 				perror("Not a valid value\n");
@@ -251,10 +296,7 @@ int parse_line(char *str, int key_w)
 					perror("Label not found!\n");
 					exit(1);
 				}
-				memory[code_pos].is_val = 0;
-				memory[code_pos].command = 0x40; // JUMP
-				memory[code_pos].operand = addr;
-				code_pos++;
+				add_code(0x40, addr); // JUMP
 			}
 			else  {
 				perror("Not a valid value\n");
@@ -263,10 +305,7 @@ int parse_line(char *str, int key_w)
 			break;
 		
 		case KEYW_END:
-			memory[code_pos].is_val = 0;
-			memory[code_pos].command = 0x43; // HALT
-			memory[code_pos].operand = 0;
-			code_pos++;
+			add_code(0x43, 0); // HALT
 			break;
 		
 		case KEYW_IF:
@@ -284,7 +323,7 @@ int parse_line(char *str, int key_w)
 			else if (strcmp(token, "=") == 0)
 				sign = '=';
 			else {
-				perror("Unknown logical opration!\n");
+				perror("Unknown logical operation!\n");
 				exit(1);
 			}
 			
@@ -350,12 +389,20 @@ int parse_line(char *str, int key_w)
 			
 			case KEYW_LET:
 				ptr = cpy_token(token, str);
+				if (!is_value(token)) {
+					val = get_val_addr(token[0]);
+				}
+				else {
+					perror("Not a valid value\n");
+					exit(1);
+				}
+				ptr = cpy_token(token, ptr);
 				if (strcmp(token, "=") != 0) {
 					perror("Uncorrect LET statement!\n");
 					exit(1);
 				}
 				translate_to_rpn(rpn, ptr);
-				rpn_pars(rpn);
+				rpn_pars(rpn, val);
 				break;
 	}
 	return 0;
@@ -391,6 +438,8 @@ int main(int argc, char *argv[])
 	
 	for (i = 0; i < 26; i++)
 		val_table[i] = -1;
+	for (i = 0; i < 100; i++)
+		stack_addr[i] = -1;
 	while (fgets(line, 256, input)) {
 		if (srt_is_empty(line) == 0)
 			continue;
