@@ -20,11 +20,11 @@ int ALU(int command, int operand)
 			}
 			break;
 		
-		case 0x32: /* MUL */
+		case 0x33: /* MUL */
 			accumulator *= sc_memory[operand];
 			break;
 		
-		case 0x33: /* DIV */
+		case 0x32: /* DIV */
 			if (sc_memory[operand] != 0)
 				accumulator /= sc_memory[operand];
 			else {
