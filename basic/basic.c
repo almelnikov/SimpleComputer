@@ -422,6 +422,7 @@ int main(int argc, char *argv[])
 {
 	FILE *input, *output;
 	char asm_filename[256];
+	char cmdstr[256] = "./sat ";
 	char line[256], keyw_str[256];
 	char *str;
 	int i;
@@ -468,10 +469,12 @@ int main(int argc, char *argv[])
 		label_pos++;
 		parse_line(str, keyw);
 	}
-	
 	save_asm(output);
 	fclose(output);
-	
+	strcat(cmdstr, argv[1]);
+	strcat(cmdstr, " ");
+	strcat(cmdstr, asm_filename);
+	system(cmdstr);
 	fclose(input);
 	return 0;
 }
