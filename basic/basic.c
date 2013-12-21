@@ -260,6 +260,7 @@ int parse_line(char *str, int key_w)
 	char rpn[256];
 	int readen, label;
 	int if_val1, if_val2; // Адресс первой и второй переменной логического выр.
+	int if_jmp;
 	char sign;
 	int keyw;
 	int val; // LET val
@@ -336,45 +337,25 @@ int parse_line(char *str, int key_w)
 			
 			switch (sign) {
 				case '<':
-					memory[code_pos].is_val = 0;
-					memory[code_pos].command = 0x20; // LOAD
-					memory[code_pos].operand = if_val1;
-					memory[code_pos+1].is_val = 0;
-					memory[code_pos+1].command = 0x31; // SUB
-					memory[code_pos+1].operand = if_val2;
-					memory[code_pos+2].is_val = 0;
-					memory[code_pos+2].command = 0x41; // JNEG
-					memory[code_pos+2].operand = code_pos + 4;
+					add_code(0x20, if_val1);
+					add_code(0x31, if_val2);
+					add_code(0x41, code_pos + 2);
 					break;
 				
 				case '>':
-					memory[code_pos].is_val = 0;
-					memory[code_pos].command = 0x20; // LOAD
-					memory[code_pos].operand = if_val2;
-					memory[code_pos+1].is_val = 0;
-					memory[code_pos+1].command = 0x31; // SUB
-					memory[code_pos+1].operand = if_val1;
-					memory[code_pos+2].is_val = 0;
-					memory[code_pos+2].command = 0x41; // JNEG
-					memory[code_pos+2].operand = code_pos + 4;
+					add_code(0x20, if_val2);
+					add_code(0x31, if_val1);
+					add_code(0x41, code_pos + 2);
 					break;
 				
 				case '=':
-					memory[code_pos].is_val = 0;
-					memory[code_pos].command = 0x20; // LOAD
-					memory[code_pos].operand = if_val1;
-					memory[code_pos+1].is_val = 0;
-					memory[code_pos+1].command = 0x31; // SUB
-					memory[code_pos+1].operand = if_val2;
-					memory[code_pos+2].is_val = 0;
-					memory[code_pos+2].command = 0x42; // JZ
-					memory[code_pos+2].operand = code_pos + 4;
+					add_code(0x20, if_val1);
+					add_code(0x31, if_val2);
+					add_code(0x42, code_pos + 2);
 					break;
 			}
-			memory[code_pos+3].is_val = 0;
-			memory[code_pos+3].command = 0x40; // JMP
-			memory[code_pos+3].operand = 0; //
-			code_pos += 4;
+			if_jmp = code_pos;
+			add_code(0x40, 0);
 			ptr = cpy_token(token, ptr);
 			keyw = get_keyword_code(token);
 			if (keyw < 0) {
@@ -386,6 +367,7 @@ int parse_line(char *str, int key_w)
 				exit(1);
 			}
 			parse_line(ptr, keyw);
+			memory[if_jmp].operand = code_pos;
 			break;
 			
 			case KEYW_LET:
