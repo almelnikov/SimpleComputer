@@ -45,18 +45,8 @@ int get_prior(char c)
 void translate_to_rpn(char *outstr, char *a)
 {
 	struct stack_t *opers = NULL;
-	//char a[100];
-	int k, point; //i, j = 0;
+	int k, point;
 
-	/*
-	if (b[2] == ' ')
-		i = 4;
-	else
-		i = 2;
-	for (; b[i] != '\0'; i++, j++)
-		a[j] = b[i];
-	a[j] = '=';
-	*/
 	k = 0;
 	point = 0;
 	while(a[k] != '\0' && a[k] != '\n') {
