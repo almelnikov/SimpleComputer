@@ -189,11 +189,12 @@ int get_val_addr(char c)
 		return -1;
 }
 
-void add_const(int n)
+int add_const(int n)
 {
 	memory[val_pos].is_val = 1;
 	memory[val_pos].command = n;
 	val_pos--;
+	return val_pos+1;
 }
 
 void add_code(int command, int operand)
@@ -331,7 +332,7 @@ int parse_line(char *str, int key_w)
 				if_val1 = get_val_addr(token[0]);
 			}
 			else if (sscanf(token, "%d", &num) == 1) {
-				add_const(num);
+				if_val1 = add_const(num);
 			}
 			else {
 				perror("Not a value or number!\n");
@@ -355,7 +356,7 @@ int parse_line(char *str, int key_w)
 				if_val2 = get_val_addr(token[0]);
 			}
 			else if (sscanf(token, "%d", &num) == 1) {
-				add_const(num);
+				if_val2 = add_const(num);
 			}
 			else {
 				perror("Not a value or number!\n");
